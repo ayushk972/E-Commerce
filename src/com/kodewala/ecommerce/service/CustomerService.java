@@ -24,7 +24,7 @@ public class CustomerService {
         int id = customerRepository.generateId();
         Customer customer = new Customer(id, name, email, mobile, address);
         customerRepository.addCustomer(customer);
-        System.out.println("\n  ✔ Registration successful! Your Customer ID: " + id);
+        System.out.println("\n  Registration successful! Your Customer ID: " + id);
         return customer;
     }
 
@@ -35,7 +35,7 @@ public class CustomerService {
             throw new CustomerNotFoundException(
                     "CustomerNotFoundException: No account found with email '" + email + "'.");
         }
-        System.out.println("\n  ✔ Welcome back, " + customer.get().getName() + "!");
+        System.out.println("\n  Welcome back, " + customer.get().getName() + "!");
         return customer.get();
     }
 
@@ -54,7 +54,7 @@ public class CustomerService {
     public void updateAddress(int id, String newAddress) {
         Customer customer = customerRepository.findById(id);
         customer.setAddress(newAddress);
-        System.out.println("  ✔ Address updated successfully for Customer [ID: " + id + "]");
+        System.out.println("  Address updated successfully for Customer [ID: " + id + "]");
     }
 
     // View all customers

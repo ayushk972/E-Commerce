@@ -1,12 +1,18 @@
 package com.kodewala.ecommerce.main;
 
+import java.util.List;
+import java.util.Scanner;
+
+import com.kodewala.ecommerce.model.CartItem;
 import com.kodewala.ecommerce.model.Customer;
+import com.kodewala.ecommerce.model.Order;
 import com.kodewala.ecommerce.repository.CustomerRepository;
 import com.kodewala.ecommerce.repository.OrderRepository;
 import com.kodewala.ecommerce.repository.ProductRepository;
-import com.kodewala.ecommerce.service.*;
-
-import java.util.Scanner;
+import com.kodewala.ecommerce.service.CartService;
+import com.kodewala.ecommerce.service.CustomerService;
+import com.kodewala.ecommerce.service.OrderService;
+import com.kodewala.ecommerce.service.ProductService;
 
 public class EcommerceApplication {
 
@@ -21,13 +27,24 @@ public class EcommerceApplication {
     private static final CartService     cartService     = new CartService(productService);
     private static final OrderService    orderService    = new OrderService(orderRepo, cartService, productService);
 
+//    // Regex
+//    private static final String NAME_REGEX = "^[\\p{L}](?:[ '-]?[\\p{L}]){1,49}$";
+//    private static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
+//
+//    private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+//    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+//
+//    private static final String MOBILE_REGEX = "^(?:\\+\\d{1,3}[- ]?)?\\d{10}$";
+//    private static final Pattern MOBILE_PATTERN = Pattern.compile(MOBILE_REGEX);
+
+    
     private static final Scanner sc = new Scanner(System.in);
 
     // ══════════════════════════════════════════════════════════════
     //  ENTRY POINT
     // ══════════════════════════════════════════════════════════════
     public static void main(String[] args) {
-        printBanner();
+
         boolean running = true;
         while (running) {
             printMainMenu();
@@ -35,8 +52,8 @@ public class EcommerceApplication {
             switch (choice) {
                 case 1 -> adminMenu();
                 case 2 -> customerMenu();
-                case 3 -> { System.out.println("\n  Goodbye! 👋"); running = false; }
-                default -> System.out.println("  ⚠ Invalid choice. Try again.");
+                case 3 -> { System.out.println("\n  Goodbye! "); running = false; }
+                default -> System.out.println("  Invalid choice. Try again.");
             }
         }
         sc.close();
@@ -56,7 +73,7 @@ public class EcommerceApplication {
     }
 
     // ══════════════════════════════════════════════════════════════
-    //  ADMIN MENU
+    //  ADMIN MENU =======‖‖‖‗‗
     // ══════════════════════════════════════════════════════════════
     private static void adminMenu() {
         boolean inAdmin = true;
@@ -73,10 +90,10 @@ public class EcommerceApplication {
                     case 6 -> customerService.viewAllCustomers();
                     case 7 -> orderService.viewAllOrders();
                     case 8 -> { System.out.println("  ← Back to Main Menu"); inAdmin = false; }
-                    default -> System.out.println("  ⚠ Invalid choice.");
+                    default -> System.out.println("  Invalid choice.");
                 }
             } catch (Exception e) {
-                System.out.println("\n  ✘ ERROR: " + e.getMessage());
+                System.out.println("\n  ERROR: " + e.getMessage());
             }
         }
     }
@@ -101,7 +118,7 @@ public class EcommerceApplication {
         System.out.print("  Product Name : "); String name     = sc.nextLine().trim();
         System.out.print("  Category     : "); String category = sc.nextLine().trim();
         System.out.print("  Brand        : "); String brand    = sc.nextLine().trim();
-        double price    = readDouble("  Price ($)    : ");
+        double price    = readDouble("  Price (₹)    : ");
         int    quantity = readInt("  Quantity     : ");
         productService.addProduct(name, category, price, quantity, brand);
     }
@@ -119,7 +136,7 @@ public class EcommerceApplication {
                 double max = readDouble("  Max Price: ");
                 productService.searchByPriceRange(min, max);
             }
-            default -> System.out.println("  ⚠ Invalid option.");
+            default -> System.out.println(" Invalid option.");
         }
     }
 
@@ -128,13 +145,13 @@ public class EcommerceApplication {
         System.out.println("  Update: 1.Price  2.Quantity");
         int opt = readInt("  Option: ");
         if (opt == 1) {
-            double price = readDouble("  New Price ($): ");
+            double price = readDouble("  New Price (₹): ");
             productService.updatePrice(id, price);
         } else if (opt == 2) {
             int qty = readInt("  New Quantity: ");
             productService.updateQuantity(id, qty);
         } else {
-            System.out.println("  ⚠ Invalid option.");
+            System.out.println("  Invalid option.");
         }
     }
 
@@ -166,11 +183,11 @@ public class EcommerceApplication {
                 String email = sc.nextLine().trim();
                 loggedIn = customerService.login(email);
             } else {
-                System.out.println("  ⚠ Invalid option.");
+                System.out.println("  Invalid option.");
                 return;
             }
         } catch (Exception e) {
-            System.out.println("\n  ✘ ERROR: " + e.getMessage());
+            System.out.println("\n  ERROR: " + e.getMessage());
             return;
         }
 
@@ -196,13 +213,13 @@ public class EcommerceApplication {
                         customerService.updateAddress(loggedIn.getCustomerId(), newAddr);
                     }
                     case 12 -> {
-                        System.out.println("  ✔ Logged out. Goodbye, " + loggedIn.getName() + "!");
+                        System.out.println("  Logged out. Goodbye, " + loggedIn.getName() + "!");
                         inCustomer = false;
                     }
-                    default -> System.out.println("  ⚠ Invalid choice.");
+                    default -> System.out.println("  Invalid choice.");
                 }
             } catch (Exception e) {
-                System.out.println("\n  ✘ ERROR: " + e.getMessage());
+                System.out.println("\n  ERROR: " + e.getMessage());
             }
         }
     }
@@ -228,10 +245,10 @@ public class EcommerceApplication {
 
     private static Customer registerCustomer() {
         System.out.println("\n  --- Customer Registration ---");
-        System.out.print("  Name     : "); String name    = sc.nextLine().trim();
-        System.out.print("  Email    : "); String email   = sc.nextLine().trim();
-        System.out.print("  Mobile   : "); String mobile  = sc.nextLine().trim();
-        System.out.print("  Address  : "); String address = sc.nextLine().trim();
+		/* System.out.print("  Name     : "); */ String name    = readLine("  Name     : ");
+		/* System.out.print("  Email    : "); */ String  email   = readLine("  Email    : ");
+		/* System.out.print("  Mobile   : "); */ String mobile  = readLine("  Mobile   : ");
+		/* System.out.print("  Address  : "); */ String address = readLine("  Address  : ");
         return customerService.register(name, email, mobile, address);
     }
 
@@ -244,12 +261,21 @@ public class EcommerceApplication {
             case 3 -> { System.out.print("  Category: "); productService.searchByCategory(sc.nextLine().trim()); }
             case 4 -> { System.out.print("  Brand: "); productService.searchByBrand(sc.nextLine().trim()); }
             case 5 -> {
-                double min = readDouble("  Min Price ($): ");
-                double max = readDouble("  Max Price ($): ");
+                double min = readDouble("  Min Price (₹): ");
+                double max = readDouble("  Max Price (₹): ");
                 productService.searchByPriceRange(min, max);
             }
-            default -> System.out.println("  ⚠ Invalid option.");
+            default -> System.out.println("  Invalid option.");
         }
+    }
+    
+    private static boolean checkCart(int customerId) {
+    	List<CartItem> cart = cartService.getCartItems(customerId);
+    	if(cart.isEmpty()) {
+    		System.out.println("Cart is Empty..");
+    		return false;
+    	} 
+    	return true;
     }
 
     private static void customerAddToCart(int customerId) {
@@ -259,11 +285,13 @@ public class EcommerceApplication {
     }
 
     private static void customerRemoveFromCart(int customerId) {
+    	if(!checkCart(customerId)) return;
         int productId = readInt("\n  Product ID to remove from cart: ");
         cartService.removeFromCart(customerId, productId);
     }
 
     private static void customerChangeQuantity(int customerId) {
+    	if(!checkCart(customerId)) return;
         int productId = readInt("\n  Product ID: ");
         System.out.println("  1. Increase  2. Decrease");
         int opt    = readInt("  Option: ");
@@ -273,11 +301,16 @@ public class EcommerceApplication {
         } else if (opt == 2) {
             cartService.decreaseQuantity(customerId, productId, amount);
         } else {
-            System.out.println("  ⚠ Invalid option.");
+            System.out.println(" Invalid option.");
         }
     }
 
     private static void customerCancelOrder(int customerId) {
+    	List<Order> checkOrder = orderRepo.findByCustomerId(customerId);
+    	if(checkOrder.isEmpty()) {
+    		System.out.println("    Order Not Exist..\n First Order");
+    		return;
+    	}
         System.out.print("\n  Enter Order ID to cancel: ");
         String orderId = sc.nextLine().trim();
         orderService.cancelOrder(orderId, customerId);
@@ -293,7 +326,7 @@ public class EcommerceApplication {
                 int val = Integer.parseInt(sc.nextLine().trim());
                 return val;
             } catch (NumberFormatException e) {
-                System.out.println("  ⚠ Please enter a valid integer.");
+                System.out.println("  Please enter a valid integer.");
             }
         }
     }
@@ -305,22 +338,33 @@ public class EcommerceApplication {
                 double val = Double.parseDouble(sc.nextLine().trim());
                 return val;
             } catch (NumberFormatException e) {
-                System.out.println("  ⚠ Please enter a valid number.");
+                System.out.println("  Please enter a valid number.");
             }
         }
     }
 
-    private static String readLine(String prompt) {
-        System.out.print(prompt);
-        return sc.nextLine().trim();
+    private static String readLine(String text) {
+    	while(true) {
+    		System.out.print(text);
+    		try {
+    			String input = sc.nextLine().trim();
+    			if(input == null || input.isEmpty()) throw new IllegalArgumentException();
+    			return input;
+			} catch (IllegalArgumentException e) {
+				System.out.println("Please Enter a" + text);
+			}
+    	} 
     }
-
-    private static void printBanner() {
-        System.out.println("╔══════════════════════════════════════════════════╗");
-        System.out.println("║                                                  ║");
-        System.out.println("║    🛒  KodeWala E-Commerce Store  🛒             ║");
-        System.out.println("║         Console-Based Mini Project               ║");
-        System.out.println("║                                                  ║");
-        System.out.println("╚══════════════════════════════════════════════════╝");
-    }
+    
+//    public static boolean isValidName(String name) {
+//        return name != null && NAME_PATTERN.matcher(name.trim()).matches();
+//    }
+//
+//    public static boolean isValidEmail(String email) {
+//        return email != null && EMAIL_PATTERN.matcher(email.trim()).matches();
+//    }
+//
+//    public static boolean isValidMobile(String mobile) {
+//        return mobile != null && MOBILE_PATTERN.matcher(mobile.trim()).matches();
+//    }
 }

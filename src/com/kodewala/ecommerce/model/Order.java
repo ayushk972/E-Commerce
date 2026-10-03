@@ -43,7 +43,7 @@ public class Order {
             "| Customer ID  : %-33d|%n" +
             "| Date         : %-33s|%n" +
             "| Status       : %-33s|%n" +
-            "| Total Amount : $%-32.2f|%n" +
+            "| Total Amount : ₹%-32.2f|%n" +
             "+------ Items ----------------------------------------+%n",
             orderId, customerId, orderDate.format(fmt), orderStatus, totalAmount
         ));

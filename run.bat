@@ -1,5 +1,5 @@
 @echo off
-title KodeWala E-Commerce
+title E-Commerce
 echo Compiling...
 javac -d out -sourcepath src src\com\kodewala\ecommerce\main\EcommerceApplication.java
 if errorlevel 1 (

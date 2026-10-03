@@ -1,11 +1,11 @@
 package com.kodewala.ecommerce.repository;
 
-import com.kodewala.ecommerce.exception.ProductNotFoundException;
-import com.kodewala.ecommerce.model.Product;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.kodewala.ecommerce.exception.ProductNotFoundException;
+import com.kodewala.ecommerce.model.Product;
 
 public class ProductRepository {
 
@@ -53,7 +53,7 @@ public class ProductRepository {
         String lower = name.toLowerCase();
         return products.stream()
                 .filter(p -> p.getProductName().toLowerCase().contains(lower))
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     // Find by category
@@ -61,7 +61,7 @@ public class ProductRepository {
         String lower = category.toLowerCase();
         return products.stream()
                 .filter(p -> p.getCategory().toLowerCase().contains(lower))
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     // Find by brand
@@ -69,7 +69,7 @@ public class ProductRepository {
         String lower = brand.toLowerCase();
         return products.stream()
                 .filter(p -> p.getBrand().toLowerCase().contains(lower))
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     // Find by price range
@@ -77,7 +77,7 @@ public class ProductRepository {
         return products.stream()
                 .filter(p -> p.getPrice() >= min && p.getPrice() <= max)
                 .sorted(java.util.Comparator.comparingDouble(Product::getPrice))
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     // Delete product

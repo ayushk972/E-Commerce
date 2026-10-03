@@ -37,7 +37,7 @@ public class Product {
             "| Name         : %-33s|%n" +
             "| Category     : %-33s|%n" +
             "| Brand        : %-33s|%n" +
-            "| Price        : %-33.2f|%n" +
+            "| Price        : ₹%-32.2f|%n" +
             "| Quantity     : %-33d|%n" +
             "+--------------------------------------------------+",
             productId, productName, category, brand, price, quantity

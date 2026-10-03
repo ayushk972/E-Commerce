@@ -57,7 +57,7 @@ public class OrderService {
 
         System.out.println("\n  ✔ Order placed successfully!");
         System.out.println("  Order ID: " + orderId);
-        System.out.printf("  Total Amount: $%.2f%n", total);
+        System.out.printf("  Total Amount: ₹%.2f%n", total);
         return orderId;
     }
 
