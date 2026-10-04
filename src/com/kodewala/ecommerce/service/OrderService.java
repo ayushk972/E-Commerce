@@ -55,9 +55,9 @@ public class OrderService {
         // Clear cart after successful order
         cartService.clearCart(customerId);
 
-        System.out.println("\n  ✔ Order placed successfully!");
+        System.out.println("\n   Order placed successfully!");
         System.out.println("  Order ID: " + orderId);
-        System.out.printf("  Total Amount: ₹%.2f%n", total);
+        System.out.printf("  Total qty: ₹%.2f%n", total);
         return orderId;
     }
 
@@ -99,7 +99,7 @@ public class OrderService {
         }
 
         order.setOrderStatus(OrderStatus.CANCELLED);
-        System.out.println("  ✔ Order [" + orderId + "] has been cancelled. Inventory restored.");
+        System.out.println("  Order [" + orderId + "] has been cancelled. Inventory restored.");
     }
 
     // View all orders (admin)
@@ -111,5 +111,30 @@ public class OrderService {
         }
         System.out.println("\n  ===== ALL ORDERS (" + orders.size() + ") =====");
         orders.forEach(System.out::println);
+    }
+
+    // Update order status (admin only)
+    // Allowed progression: PLACED → CONFIRMED → SHIPPED → DELIVERED
+    // CANCELLED orders cannot be updated further
+    public void updateOrderStatus(String orderId, OrderStatus newStatus) {
+        Order order = orderRepository.findById(orderId);
+        OrderStatus current = order.getOrderStatus();
+
+        // Cannot change status of a cancelled order
+        if (current == OrderStatus.CANCELLED) {
+            throw new InvalidOrderException(
+                "InvalidOrderException: Cannot update a CANCELLED order.");
+        }
+
+        // Cannot move status backwards
+        if (newStatus.ordinal() <= current.ordinal()) {
+            throw new InvalidOrderException(
+                "InvalidOrderException: Cannot move status from " + current +
+                " to " + newStatus + ". Status can only move forward.");
+        }
+
+        order.setOrderStatus(newStatus);
+        System.out.println("  ✔ Order [" + orderId + "] status updated: "
+                + current + " → " + newStatus);
     }
 }

@@ -71,13 +71,13 @@ public class CartService {
 	}
 
 	// Increase quantity
-	public void increaseQuantity(int customerId, int productId, int amount) {
-		if (amount <= 0)
-			throw new InvalidQuantityException("InvalidQuantityException: Amount must be positive.");
+	public void increaseQuantity(int customerId, int productId, int qty) {
+		if (qty <= 0)
+			throw new InvalidQuantityException("InvalidQuantityException: Qty must be positive.");
 		List<CartItem> cart = getOrCreateCart(customerId);
 		CartItem item = findCartItem(cart, productId);
 		Product product = productService.getProduct(productId);
-		int newQty = item.getQuantity() + amount;
+		int newQty = item.getQuantity() + qty;
 		if (product.getQuantity() < newQty) {
 			throw new InsufficientStockException(
 					"InsufficientStockException: Only " + product.getQuantity() + " unit(s) available.");
@@ -87,12 +87,12 @@ public class CartService {
 	}
 
 	// Decrease quantity
-	public void decreaseQuantity(int customerId, int productId, int amount) {
-		if (amount <= 0)
-			throw new InvalidQuantityException("InvalidQuantityException: Amount must be positive.");
+	public void decreaseQuantity(int customerId, int productId, int qty) {
+		if (qty <= 0)
+			throw new InvalidQuantityException("InvalidQuantityException: Qty must be positive.");
 		List<CartItem> cart = getOrCreateCart(customerId);
 		CartItem item = findCartItem(cart, productId);
-		int newQty = item.getQuantity() - amount;
+		int newQty = item.getQuantity() - qty;
 		if (newQty <= 0) {
 			cart.remove(item);
 			System.out.println("  Item removed from cart (quantity reached 0).");

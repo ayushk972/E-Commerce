@@ -22,7 +22,7 @@ public class ProductService {
         int id = productRepository.generateId();
         Product product = new Product(id, name, category, price, quantity, brand);
         productRepository.addProduct(product);
-        System.out.println("\n  ✔ Product added successfully! [ID: " + id + "]");
+        System.out.println("\n  Product added successfully! [ID: " + id + "]");
     }
 
     // View all products
@@ -73,7 +73,7 @@ public class ProductService {
         if (newPrice < 0) throw new IllegalArgumentException("Price cannot be negative.");
         Product product = productRepository.findById(id);
         product.setPrice(newPrice);
-        System.out.println("  ✔ Price updated to $" + newPrice + " for product [ID: " + id + "]");
+        System.out.println("  Price updated to $" + newPrice + " for product [ID: " + id + "]");
     }
 
     // Update quantity
@@ -81,13 +81,13 @@ public class ProductService {
         if (newQuantity < 0) throw new InvalidQuantityException("InvalidQuantityException: Quantity cannot be negative.");
         Product product = productRepository.findById(id);
         product.setQuantity(newQuantity);
-        System.out.println("  ✔ Quantity updated to " + newQuantity + " for product [ID: " + id + "]");
+        System.out.println("  Quantity updated to " + newQuantity + " for product [ID: " + id + "]");
     }
 
     // Delete product
     public void deleteProduct(int id) {
         productRepository.deleteProduct(id);
-        System.out.println("  ✔ Product [ID: " + id + "] deleted successfully.");
+        System.out.println("  Product [ID: " + id + "] deleted successfully.");
     }
 
     // Get product (used by other services)

@@ -16,14 +16,30 @@ public class Customer {
     }
 
     // Getters
-    public int getCustomerId()   { return customerId; }
-    public String getName()      { return name; }
-    public String getEmail()     { return email; }
-    public String getMobile()    { return mobile; }
-    public String getAddress()   { return address; }
+	public int getCustomerId() {
+		return customerId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public String getAddress() {
+		return address;
+	}
 
     // Setter
-    public void setAddress(String address) { this.address = address; }
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
     @Override
     public String toString() {

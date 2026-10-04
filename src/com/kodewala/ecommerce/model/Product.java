@@ -18,16 +18,38 @@ public class Product {
     }
 
     // Getters
-    public int getProductId()       { return productId; }
-    public String getProductName()  { return productName; }
-    public String getCategory()     { return category; }
-    public double getPrice()        { return price; }
-    public int getQuantity()        { return quantity; }
-    public String getBrand()        { return brand; }
+	public int getProductId() {
+		return productId;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public String getBrand() {
+		return brand;
+	}
 
     // Setters
-    public void setPrice(double price)       { this.price = price; }
-    public void setQuantity(int quantity)    { this.quantity = quantity; }
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
 
     @Override
     public String toString() {

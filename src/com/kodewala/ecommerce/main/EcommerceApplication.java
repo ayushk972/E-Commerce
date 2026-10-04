@@ -16,12 +16,12 @@ import com.kodewala.ecommerce.service.ProductService;
 
 public class EcommerceApplication {
 
-    // ── Repositories ──────────────────────────────────────────────
+    //  Repositories 
     private static final ProductRepository  productRepo  = new ProductRepository();
     private static final CustomerRepository customerRepo = new CustomerRepository();
     private static final OrderRepository    orderRepo    = new OrderRepository();
 
-    // ── Services ──────────────────────────────────────────────────
+    //  Services 
     private static final ProductService  productService  = new ProductService(productRepo);
     private static final CustomerService customerService = new CustomerService(customerRepo);
     private static final CartService     cartService     = new CartService(productService);
@@ -40,9 +40,7 @@ public class EcommerceApplication {
     
     private static final Scanner sc = new Scanner(System.in);
 
-    // ══════════════════════════════════════════════════════════════
     //  ENTRY POINT
-    // ══════════════════════════════════════════════════════════════
     public static void main(String[] args) {
 
         boolean running = true;
@@ -59,9 +57,7 @@ public class EcommerceApplication {
         sc.close();
     }
 
-    // ══════════════════════════════════════════════════════════════
     //  MAIN MENU
-    // ══════════════════════════════════════════════════════════════
     private static void printMainMenu() {
         System.out.println("\n╔══════════════════════════════╗");
         System.out.println("║       MAIN MENU              ║");
@@ -72,9 +68,7 @@ public class EcommerceApplication {
         System.out.println("╚══════════════════════════════╝");
     }
 
-    // ══════════════════════════════════════════════════════════════
-    //  ADMIN MENU =======‖‖‖‗‗
-    // ══════════════════════════════════════════════════════════════
+    //  ADMIN MENU
     private static void adminMenu() {
         boolean inAdmin = true;
         while (inAdmin) {
@@ -89,8 +83,9 @@ public class EcommerceApplication {
                     case 5 -> adminDeleteProduct();
                     case 6 -> customerService.viewAllCustomers();
                     case 7 -> orderService.viewAllOrders();
-                    case 8 -> { System.out.println("  ← Back to Main Menu"); inAdmin = false; }
-                    default -> System.out.println("  Invalid choice.");
+                    case 8 -> adminUpdateOrderStatus();
+                    case 9 -> { System.out.println("  ← Back to Main Menu"); inAdmin = false; }
+                    default -> System.out.println("   Invalid choice.");
                 }
             } catch (Exception e) {
                 System.out.println("\n  ERROR: " + e.getMessage());
@@ -109,7 +104,8 @@ public class EcommerceApplication {
         System.out.println("║  5. Delete Product           ║");
         System.out.println("║  6. View Customers           ║");
         System.out.println("║  7. View All Orders          ║");
-        System.out.println("║  8. Exit Admin               ║");
+        System.out.println("║  8. Update Order Status      ║");
+        System.out.println("║  9. Exit Admin               ║");
         System.out.println("╚══════════════════════════════╝");
     }
 
@@ -166,9 +162,32 @@ public class EcommerceApplication {
         }
     }
 
-    // ══════════════════════════════════════════════════════════════
+    private static void adminUpdateOrderStatus() {
+    	List<Order> order = orderRepo.getAllOrders();
+    	if(order.isEmpty()) {
+    		System.out.println("  Empty Order.");
+    		return;
+    	}
+        System.out.print("\n  Enter Order ID: ");
+        String orderId = sc.nextLine().trim();
+
+        System.out.println("  Select new status:");
+        System.out.println("  1. CONFIRMED");
+        System.out.println("  2. SHIPPED");
+        System.out.println("  3. DELIVERED");
+
+        int opt = readInt("  Option: ");
+        com.kodewala.ecommerce.model.OrderStatus newStatus;
+        switch (opt) {
+            case 1 -> newStatus = com.kodewala.ecommerce.model.OrderStatus.CONFIRMED;
+            case 2 -> newStatus = com.kodewala.ecommerce.model.OrderStatus.SHIPPED;
+            case 3 -> newStatus = com.kodewala.ecommerce.model.OrderStatus.DELIVERED;
+            default -> { System.out.println("  Invalid option."); return; }
+        }
+        orderService.updateOrderStatus(orderId, newStatus);
+    }
+
     //  CUSTOMER MENU
-    // ══════════════════════════════════════════════════════════════
     private static void customerMenu() {
         Customer loggedIn = null;
 
@@ -295,11 +314,11 @@ public class EcommerceApplication {
         int productId = readInt("\n  Product ID: ");
         System.out.println("  1. Increase  2. Decrease");
         int opt    = readInt("  Option: ");
-        int amount = readInt("  Amount: ");
+        int qty = readInt("  qty: ");
         if (opt == 1) {
-            cartService.increaseQuantity(customerId, productId, amount);
+            cartService.increaseQuantity(customerId, productId, qty);
         } else if (opt == 2) {
-            cartService.decreaseQuantity(customerId, productId, amount);
+            cartService.decreaseQuantity(customerId, productId, qty);
         } else {
             System.out.println(" Invalid option.");
         }
@@ -316,9 +335,7 @@ public class EcommerceApplication {
         orderService.cancelOrder(orderId, customerId);
     }
 
-    // ══════════════════════════════════════════════════════════════
     //  HELPERS
-    // ══════════════════════════════════════════════════════════════
     private static int readInt(String prompt) {
         while (true) {
             System.out.print(prompt);
