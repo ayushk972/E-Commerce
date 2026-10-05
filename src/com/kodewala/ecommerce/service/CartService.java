@@ -1,4 +1,4 @@
-package com.kodewala.ecommerce.service;
+     package com.kodewala.ecommerce.service;
 
 import com.kodewala.ecommerce.exception.InsufficientStockException;
 import com.kodewala.ecommerce.exception.InvalidQuantityException;

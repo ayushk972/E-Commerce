@@ -22,7 +22,6 @@ public class OrderService {
         this.productService = productService;
     }
 
-    // Place an order
     public String placeOrder(int customerId) {
         List<CartItem> cartItems = cartService.getCartItems(customerId);
 
@@ -30,7 +29,6 @@ public class OrderService {
             throw new InvalidOrderException("InvalidOrderException: Cannot place order. Cart is empty.");
         }
 
-        // Validate stock again before placing
         for (CartItem item : cartItems) {
             Product product = productService.getProduct(item.getProductId());
             if (product.getQuantity() < item.getQuantity()) {
@@ -40,7 +38,7 @@ public class OrderService {
             }
         }
 
-        // Deduct inventory
+       
         for (CartItem item : cartItems) {
             Product product = productService.getProduct(item.getProductId());
             product.setQuantity(product.getQuantity() - item.getQuantity());
@@ -52,7 +50,7 @@ public class OrderService {
         Order order = new Order(orderId, customerId, cartItems, total);
         orderRepository.saveOrder(order);
 
-        // Clear cart after successful order
+      
         cartService.clearCart(customerId);
 
         System.out.println("\n   Order placed successfully!");
@@ -102,7 +100,7 @@ public class OrderService {
         System.out.println("  Order [" + orderId + "] has been cancelled. Inventory restored.");
     }
 
-    // View all orders (admin)
+    // View all orders
     public void viewAllOrders() {
         List<Order> orders = orderRepository.getAllOrders();
         if (orders.isEmpty()) {
@@ -113,9 +111,7 @@ public class OrderService {
         orders.forEach(System.out::println);
     }
 
-    // Update order status (admin only)
-    // Allowed progression: PLACED → CONFIRMED → SHIPPED → DELIVERED
-    // CANCELLED orders cannot be updated further
+    
     public void updateOrderStatus(String orderId, OrderStatus newStatus) {
         Order order = orderRepository.findById(orderId);
         OrderStatus current = order.getOrderStatus();
@@ -134,7 +130,7 @@ public class OrderService {
         }
 
         order.setOrderStatus(newStatus);
-        System.out.println("  ✔ Order [" + orderId + "] status updated: "
+        System.out.println("  Order [" + orderId + "] status updated: "
                 + current + " → " + newStatus);
     }
 }

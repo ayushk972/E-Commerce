@@ -50,21 +50,24 @@ public class EcommerceApplication {
             switch (choice) {
                 case 1 -> adminMenu();
                 case 2 -> customerMenu();
-                case 3 -> { System.out.println("\n  Goodbye! "); running = false; }
+                case 3 -> guestMenu();
+                case 4 -> { System.out.println("\n  Goodbye! "); running = false; }
                 default -> System.out.println("  Invalid choice. Try again.");
             }
         }
         sc.close();
     }
 
-    //  MAIN MENU
+
+	//  MAIN MENU
     private static void printMainMenu() {
         System.out.println("\n╔══════════════════════════════╗");
         System.out.println("║       MAIN MENU              ║");
         System.out.println("╠══════════════════════════════╣");
         System.out.println("║  1. Admin                    ║");
         System.out.println("║  2. Customer                 ║");
-        System.out.println("║  3. Exit                     ║");
+        System.out.println("║  3. Explore                  ║");
+        System.out.println("║  4. Exit                     ║");
         System.out.println("╚══════════════════════════════╝");
     }
 
@@ -186,6 +189,61 @@ public class EcommerceApplication {
         }
         orderService.updateOrderStatus(orderId, newStatus);
     }
+    
+    // GUEST MENU
+    private static void guestMenu() {
+    	Customer loggedIn = new Customer();
+    	boolean inGuest = true;
+    	while(inGuest) {
+    		printGuestMenu(loggedIn.getName());
+    			int choice = readInt("  Your Choice:  ");
+    			try {
+                    switch (choice) {
+                        case 1  -> productService.viewAllProducts();
+                        case 2  -> customerSearchProduct();
+                        case 3  -> customerAddToCart(loggedIn.getCustomerId());
+                        case 4  -> cartService.viewCart(loggedIn.getCustomerId());
+                        case 5  -> customerRemoveFromCart(loggedIn.getCustomerId());
+                        case 6  -> customerChangeQuantity(loggedIn.getCustomerId());
+                        case 7  -> /*orderService.placeOrder(loggedIn.getCustomerId());*/ {
+                        	System.out.println("   First Register Or LogIn Your Account....");
+//                        	List<CartItem> guestCartItem = cartService.getCartItems(0);
+                        	customerMenu();
+                        	inGuest = false;
+                        }
+                        case 8  -> inGuest = false;
+                        default -> System.out.println("  Invalid choice.");
+                    }
+                } catch (Exception e) {
+                    System.out.println("\n  ERROR: " + e.getMessage());
+                }
+    	}
+    }
+    
+    // Guest Cart Add to Customer Cart
+    private static void addGuestCartToCutomerCart(int customerId) {
+    	List<CartItem> guestCart = cartService.getCartItems(0);
+    	for(CartItem cart: guestCart) {
+    		cartService.addToCart(customerId, cart.getProductId(), cart.getQuantity());
+    	}
+    }
+    
+    // Guest Menu print
+    private static void printGuestMenu(String name) {
+        System.out.println("\n╔══════════════════════════════════════╗");
+        System.out.printf( "║  Hello, %-29s║%n", name + "!");
+        System.out.println("╠══════════════════════════════════════╣");
+        System.out.println("║   1.  View Products                  ║");
+        System.out.println("║   2.  Search Product                 ║");
+        System.out.println("║   3.  Add Product to Cart            ║");
+        System.out.println("║   4.  View Cart                      ║");
+        System.out.println("║   5.  Remove Product from Cart       ║");
+        System.out.println("║   6.  Change Cart Item Quantity      ║");
+        System.out.println("║   7.  Place Order                    ║");
+        System.out.println("║   8.  Main Menu                      ║");
+        System.out.println("╚══════════════════════════════════════╝");
+    }
+    
 
     //  CUSTOMER MENU
     private static void customerMenu() {
@@ -208,6 +266,11 @@ public class EcommerceApplication {
         } catch (Exception e) {
             System.out.println("\n  ERROR: " + e.getMessage());
             return;
+        }
+        
+        List<CartItem> guestCart = cartService.getCartItems(0);
+        if(!guestCart.isEmpty()) {
+        	addGuestCartToCutomerCart(loggedIn.getCustomerId());
         }
 
         // Logged-in session

@@ -14,6 +14,12 @@ public class Customer {
         this.mobile = mobile;
         this.address = address;
     }
+    
+    public Customer() {
+    	super();
+    	this.customerId = 0;
+    	this.name = "Guest";
+    }
 
     // Getters
 	public int getCustomerId() {
